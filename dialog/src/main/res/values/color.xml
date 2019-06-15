@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!--移动端颜色规范v1.2-->
+    <color name="orange_text_main">#333333</color><!--字体主色-->
+    <color name="orange_text_second">#666666</color><!--字体第二辅助色-->
+    <color name="orange_text_third">#999999</color><!--字体第三辅助色-->
+    <color name="orange_text_third_50">#80999999</color><!--字体第三辅助色-->
+    <color name="orange_text_placeholder">#7f999999</color>
+    <color name="orange_text_weak">#7f999999</color><!--字体弱化、输入框提示的颜色-->
+    <color name="orange_main_color">#30C27B</color><!--主色-->
+    <color name="orange_second_color">#FFBB22</color><!--辅助橙-->
+    <color name="orange_third_color">#F44336</color><!--辅助红-->
+    <color name="orange_third_color_enable_false">#80F44336</color><!--辅助红-->
+    <color name="orange_main_background">#F4F4F4</color><!--主背景色-->
+    <color name="orange_second_background">#FAFAFA</color><!--辅助背景色-->
+    <color name="orange_main_divider">#F0F0F0</color><!--分割线-->
+    <color name="orange_main_price">#F44336</color><!--价格-->
+    <color name="orange_main_warning">#F44336</color><!--警告-->
+    <color name="orange_main_stroke">#F0F0F0</color><!--主描边-->
+    <color name="orange_hyberlink_color">#576B95</color><!--超链接，用于点击跳转到web页面-->
+
+    <color name="white" tools:ignore="ResourceName">#ffffffff</color>
+    <color name="orange">#FFFF5A31</color>
+
+    <color name="orange_dialog_negative_btn_text">@color/orange_text_second</color><!--消极，取消-->
+</resources>

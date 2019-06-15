@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="295dp"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/dialogTitle"
+        style="@style/orange_DialogStyle.Title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="标题" />
+
+    <ImageView
+        android:id="@+id/dialogIcon"
+        android:layout_width="92dp"
+        android:layout_height="92dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="30dp" />
+
+    <TextView
+        android:id="@+id/dialogContent"
+        style="@style/orange_DialogStyle.Content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="内容" />
+
+    <include layout="@layout/orange_item_dialog_button"/>
+</LinearLayout>

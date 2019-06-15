@@ -1,8 +1,32 @@
-## OrangeDialog
+package me.shetj.dialog
 
-### v 1.0.0
-```
-  OrangeDialog.Builder(this)
+import androidx.appcompat.app.AppCompatActivity
+import android.os.Bundle
+import android.text.TextUtils
+import android.view.View
+import android.widget.Toast
+import kotlinx.android.synthetic.main.activity_main.*
+import me.shetj.dialog.OrangeDialog.*
+import java.security.AccessController.getContext
+
+class MainActivity : AppCompatActivity() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+        btn_type_1.setOnClickListener {
+            show()
+        }
+    }
+
+
+
+
+    /**
+     * 展示是否删除所选
+     */
+    private fun show( ) {
+        OrangeDialog.Builder(this)
             .title("提示")
             .dialogType(DIALOG_TYPE_IMAGE)
             .content("确定要取消下载所选内容吗？")
@@ -107,4 +131,5 @@
             }
             .show()
 
-```
+    }
+}

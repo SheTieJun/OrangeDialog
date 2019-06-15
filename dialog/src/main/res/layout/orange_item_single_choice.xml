@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingEnd="20dp"
+    android:paddingStart="20dp">
+
+    <ImageView
+        android:id="@+id/singleChoice"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp"
+        android:src="@drawable/orange_icon_check" />
+
+    <TextView
+        android:id="@+id/singleName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginStart="10dp"
+        android:text="标题"
+        android:textColor="@color/orange_text_second"
+        android:textSize="@dimen/text_size_14" />
+</LinearLayout>

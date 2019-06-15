@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="orange_dialog_default_style" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:windowBackground">@drawable/orange_dialog_background</item>
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:backgroundDimEnabled">true</item>
+    </style>
+
+    <style name="orange_DialogStyle" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:windowBackground">@drawable/orange_dialog_background</item>
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:backgroundDimEnabled">true</item>
+    </style>
+
+    <style name="orange_DialogStyle.Title">
+        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="android:layout_marginTop">30dp</item>
+        <item name="android:layout_marginStart">15dp</item>
+        <item name="android:layout_marginEnd">15dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/orange_text_main</item>
+        <item name="android:textSize">@dimen/text_size_18</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="orange_DialogStyle.Content">
+        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="android:layout_marginTop">10dp</item>
+        <item name="android:layout_marginStart">20dp</item>
+        <item name="android:layout_marginEnd">20dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:autoLink">web|phone|email</item>
+        <item name="android:lineSpacingExtra">4dp</item>
+        <item name="android:textColor">@color/orange_text_second</item>
+        <item name="android:textSize">@dimen/text_size_14</item>
+    </style>
+
+    <style name="orange_DialogStyle.Negative">
+        <item name="android:background">@drawable/orange_dialog_btn_negative_selector</item>
+        <!--<item name="android:foreground">?attr/selectableItemBackground</item>-->
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/orange_dialog_negative_btn_text</item>
+        <item name="android:textSize">@dimen/text_size_18</item>
+    </style>
+
+    <style name="orange_DialogStyle.Positive">
+        <item name="android:background">@drawable/orange_dialog_btn_positive_selector</item>
+        <!--<item name="android:foreground">?attr/selectableItemBackground</item>-->
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">@dimen/text_size_18</item>
+    </style>
+
+    <style name="orange_DialogStyle.Input">
+        <item name="android:layout_marginStart">20dp</item>
+        <item name="android:layout_marginEnd">20dp</item>
+        <item name="android:background">@drawable/new_weike_dialog_edittext_selector</item>
+        <item name="android:gravity">start</item>
+        <item name="android:paddingTop">13dp</item>
+        <item name="android:paddingBottom">13dp</item>
+        <item name="android:paddingLeft">20dp</item>
+        <item name="android:paddingRight">20dp</item>
+        <item name="android:textColor">@color/orange_text_second</item>
+        <item name="android:textColorHint">@color/orange_text_weak</item>
+        <item name="android:textSize">@dimen/text_size_14</item>
+    </style>
+    
+    <style name="orange_tip_pop_anim_style">
+        <item name="android:windowEnterAnimation">@anim/fade_ins</item>
+        <item name="android:windowExitAnimation">@anim/fade_out</item>
+    </style>
+</resources>
