@@ -1,4 +1,4 @@
-package me.shetj.dialog
+package me.shetj.dialogtest
 
 import org.junit.Test
 

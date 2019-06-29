@@ -8,7 +8,7 @@ android {
     compileSdkVersion 29
     buildToolsVersion "29.0.0"
     defaultConfig {
-        applicationId "me.shetj.dialog"
+        applicationId "me.shetj.dialogTest"
         minSdkVersion 21
         targetSdkVersion 29
         versionCode 1

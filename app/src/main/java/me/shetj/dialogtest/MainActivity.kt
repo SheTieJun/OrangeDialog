@@ -1,13 +1,11 @@
-package me.shetj.dialog
+package me.shetj.dialogtest
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.text.TextUtils
-import android.view.View
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
+import me.shetj.dialog.OrangeDialog
 import me.shetj.dialog.OrangeDialog.*
-import java.security.AccessController.getContext
 
 class MainActivity : AppCompatActivity() {
 
