@@ -1,6 +1,13 @@
 ## OrangeDialog
 
 ### v 1.0.0
+
+need :
+```
+    implementation 'androidx.recyclerview:recyclerview:1.0.0'
+    implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.45-androidx'
+```
+
 ```
   OrangeDialog.Builder(this)
             .title("提示")
