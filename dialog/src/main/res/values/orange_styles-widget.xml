@@ -62,7 +62,7 @@
     <style name="orange_DialogStyle.Input">
         <item name="android:layout_marginStart">20dp</item>
         <item name="android:layout_marginEnd">20dp</item>
-        <item name="android:background">@drawable/new_weike_dialog_edittext_selector</item>
+        <item name="android:background">@drawable/orange_dialog_edittext_selector</item>
         <item name="android:gravity">start</item>
         <item name="android:paddingTop">13dp</item>
         <item name="android:paddingBottom">13dp</item>

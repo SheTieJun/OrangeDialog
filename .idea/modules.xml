@@ -2,6 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/Dialog.iml" filepath="$PROJECT_DIR$/Dialog.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/Dialog-app.iml" filepath="$PROJECT_DIR$/app/Dialog-app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/dialog/Dialog-dialog.iml" filepath="$PROJECT_DIR$/dialog/Dialog-dialog.iml" />
       <module fileurl="file://$PROJECT_DIR$/OrangeDialog.iml" filepath="$PROJECT_DIR$/OrangeDialog.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/dialog/dialog.iml" filepath="$PROJECT_DIR$/dialog/dialog.iml" />
