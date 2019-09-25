@@ -3,12 +3,23 @@
 ### v 1.0.0
 
 need :
-```
+```groovy
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
     implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.45-androidx'
 ```
 
+```kotlin
+      OrangeDialogBuilder(
+            this, DIALOG_TYPE_IMAGE,
+            title = "提示2",
+            content = "确定要取消下载所选内容吗?2",
+            onPositive = SingleButtonCallback { _, _ ->
+                Toast.makeText(this@MainActivity,"确定",Toast.LENGTH_SHORT).show()
+            }).show()
 ```
+
+
+``` java
   OrangeDialog.Builder(this)
             .title("提示")
             .dialogType(DIALOG_TYPE_IMAGE)

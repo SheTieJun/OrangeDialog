@@ -24,9 +24,16 @@ class MainActivity : AppCompatActivity() {
      */
     private fun show( ) {
 
-        OrangeDialogBuilder(this, DIALOG_TYPE_IMAGE,
-            title = "提示2"
-            ,content = "确定要取消下载所选内容吗?2").show()
+        OrangeDialogBuilder(
+            this, DIALOG_TYPE_IMAGE,
+            title = "提示2",
+            content = "确定要取消下载所选内容吗?2",
+            positiveText = "确定删除了",
+            onPositive = SingleButtonCallback { _, _ ->
+                Toast.makeText(this@MainActivity,"确定",Toast.LENGTH_SHORT).show()
+            }).show()
+
+
 
         OrangeDialog.Builder(this)
             .title("提示")

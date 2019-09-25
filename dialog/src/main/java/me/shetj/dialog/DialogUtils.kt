@@ -58,8 +58,7 @@ object DialogUtils {
      * <P>同时会让父布局获得焦点</P>
      */
 
-    @JvmStatic
-    fun viewClearFocus(view: View) {
+    private fun viewClearFocus(view: View) {
         view.clearFocus()
         viewRequestFocus(view.parent as View)
     }
