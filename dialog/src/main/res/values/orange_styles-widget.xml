@@ -22,7 +22,7 @@
 
     <style name="orange_DialogStyle.Title">
         <item name="android:layout_gravity">center_horizontal</item>
-        <item name="android:layout_marginTop">30dp</item>
+        <item name="android:layout_marginTop">25dp</item>
         <item name="android:layout_marginStart">15dp</item>
         <item name="android:layout_marginEnd">15dp</item>
         <item name="android:gravity">center</item>

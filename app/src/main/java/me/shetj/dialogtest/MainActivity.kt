@@ -7,6 +7,11 @@ import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
 import me.shetj.dialog.OrangeDialog
 import me.shetj.dialog.OrangeDialog.*
+import me.shetj.dialog.OrangeDialog.Companion.DIALOG_TYPE_IMAGE
+import me.shetj.dialog.OrangeDialog.Companion.DIALOG_TYPE_INPUT
+import me.shetj.dialog.OrangeDialog.Companion.DIALOG_TYPE_MESSAGE
+import me.shetj.dialog.OrangeDialog.Companion.DIALOG_TYPE_MULTI_CHOICE
+import me.shetj.dialog.OrangeDialog.Companion.DIALOG_TYPE_SINGLE_CHOICE
 import me.shetj.dialog.OrangeDialogBuilder
 
 class MainActivity : AppCompatActivity() {
@@ -26,13 +31,14 @@ class MainActivity : AppCompatActivity() {
 
         OrangeDialogBuilder(
             this, DIALOG_TYPE_IMAGE,
-            title = "提示2",
-            content = "确定要取消下载所选内容吗?2",
-            positiveText = "确定删除了",
-            onPositive = SingleButtonCallback { _, _ ->
-                Toast.makeText(this@MainActivity,"确定",Toast.LENGTH_SHORT).show()
+            title = "温馨提示",
+            content = "确定要取消下载所选内容吗?",
+            positiveText = "确定删除",
+            onPositive = object : SingleButtonCallback {
+                override fun onClick(dialog: OrangeDialog, dialogAction: String) {
+                    Toast.makeText(this@MainActivity, "确定", Toast.LENGTH_SHORT).show()
+                }
             }).show()
-
 
 
         OrangeDialog.Builder(this)
@@ -42,7 +48,7 @@ class MainActivity : AppCompatActivity() {
             .negativeText("取消")
             .positiveText("确定删除")
             .setPositiveBackground(R.drawable.orange_dialog_btn_error_positive_selector)
-            .onPositive (object : OrangeDialog.SingleButtonCallback{
+            .onPositive (object : SingleButtonCallback{
                 override fun onClick(dialog: OrangeDialog, dialogAction: String) {
 
                 }
@@ -55,7 +61,7 @@ class MainActivity : AppCompatActivity() {
             .negativeText("取消")
             .positiveText("确定删除")
             .setPositiveBackground(R.drawable.orange_dialog_btn_error_positive_selector)
-            .onPositive (object : OrangeDialog.SingleButtonCallback{
+            .onPositive (object : SingleButtonCallback{
                 override fun onClick(dialog: OrangeDialog, dialogAction: String) {
 
                 }
@@ -69,7 +75,7 @@ class MainActivity : AppCompatActivity() {
             .negativeText("取消")
             .positiveText("确定删除")
             .setPositiveBackground(R.drawable.orange_dialog_btn_error_positive_selector)
-            .onPositive (object : OrangeDialog.SingleButtonCallback{
+            .onPositive (object : SingleButtonCallback{
                 override fun onClick(dialog: OrangeDialog, dialogAction: String) {
 
                 }
@@ -93,7 +99,7 @@ class MainActivity : AppCompatActivity() {
                 }
             })
             .setPositiveBackground(R.drawable.orange_dialog_btn_error_positive_selector)
-            .onPositive (object : OrangeDialog.SingleButtonCallback{
+            .onPositive (object : SingleButtonCallback{
                 override fun onClick(dialog: OrangeDialog, dialogAction: String) {
 
                 }
@@ -110,14 +116,14 @@ class MainActivity : AppCompatActivity() {
             .itemsCallbackMultiChoice(null,object : OrangeDialog.ListCallbackMultiChoice{
                 override fun onSelection(
                     dialog: OrangeDialog,
-                    which: Array<Int?>?,
+                    which: Array<Int>?,
                     text: Array<CharSequence?>?
                 ): Boolean {
                     return true
                 }
             })
             .setPositiveBackground(R.drawable.orange_dialog_btn_error_positive_selector)
-            .onPositive (object : OrangeDialog.SingleButtonCallback{
+            .onPositive (object : SingleButtonCallback{
                 override fun onClick(dialog: OrangeDialog, dialogAction: String) {
 
                 }
@@ -129,7 +135,7 @@ class MainActivity : AppCompatActivity() {
             .content("非WIFI情况下暂停下载，如需继续，请到设置中开启限制")
             .negativeText("取消")
             .positiveText("去设置")
-            .onPositive (object : OrangeDialog.SingleButtonCallback{
+            .onPositive (object : SingleButtonCallback{
                 override fun onClick(dialog: OrangeDialog, dialogAction: String) {
                     Toast.makeText(this@MainActivity,"去设置",Toast.LENGTH_SHORT).show()
                 }
@@ -140,7 +146,7 @@ class MainActivity : AppCompatActivity() {
             .title("未完成认证，无法上传视频！")
             .positiveText("确定")
             .setPositiveBackground(R.drawable.orange_dialog_btn_positive_selector)
-            .onPositive (object : OrangeDialog.SingleButtonCallback{
+            .onPositive (object : SingleButtonCallback{
                 override fun onClick(dialog: OrangeDialog, dialogAction: String) {
 
                 }
@@ -162,7 +168,7 @@ class MainActivity : AppCompatActivity() {
             .needInput(true)
             .negativeText("取消")
             .positiveText("保存")
-            .onPositive (object : OrangeDialog.SingleButtonCallback{
+            .onPositive (object : SingleButtonCallback{
                 override fun onClick(dialog: OrangeDialog, dialogAction: String) {
                     val name = dialog.inputEditText?.text.toString().trim()
                     Toast.makeText(this@MainActivity,name,Toast.LENGTH_SHORT).show()

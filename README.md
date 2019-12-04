@@ -1,11 +1,12 @@
 ## OrangeDialog
 
-### v 1.0.0
+### v 0.0.1
 
 need :
 ```groovy
-    implementation 'androidx.recyclerview:recyclerview:1.0.0'
-    implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.45-androidx'
+    implementation "com.github.SheTieJun:OrangeDialog:0.0.1"
+    implementation 'androidx.recyclerview:recyclerview:1.1.0'
+    implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.49-androidx'
 ```
 
 ```kotlin

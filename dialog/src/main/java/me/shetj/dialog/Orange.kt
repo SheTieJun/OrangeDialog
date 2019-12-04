@@ -5,11 +5,11 @@ import androidx.annotation.DrawableRes
 
 @JvmOverloads
 fun OrangeDialogBuilder(context: Context,
-                        type: Int,
+                        type: Int =OrangeDialog.DIALOG_TYPE_MESSAGE,
                         title: String ?= null,
                         content:String?=null,
-                        negativeText :String ? = "取消",
-                        positiveText :String ? = "确定",
+                        negativeText :String ? = null,
+                        positiveText :String ? = null,
                         needInput :Boolean  = false,
                         inputValue :String ?= null,
                         inputFocus :Boolean = true,
