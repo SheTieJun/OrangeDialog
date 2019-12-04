@@ -1,7 +1,7 @@
 ## OrangeDialog
 
 ### v 0.0.1
-
+[![](https://jitpack.io/v/SheTieJun/OrangeDialog.svg)](https://jitpack.io/#SheTieJun/OrangeDialog)
 need :
 ```groovy
     implementation "com.github.SheTieJun:OrangeDialog:0.0.1"
