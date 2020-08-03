@@ -17,23 +17,21 @@ import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.annotation.UiThread
+import androidx.collection.ArraySet
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.chad.library.adapter.base.BaseQuickAdapter
-import com.chad.library.adapter.base.BaseViewHolder
 import me.shetj.dialog.DialogUtils.hideKeyboard
 import me.shetj.dialog.DialogUtils.showKeyboard
 import me.shetj.dialog.ScreenUtil.dip2px
-import org.jetbrains.annotations.NotNull
-import java.util.*
+import kotlin.collections.ArrayList
 
-class OrangeDialog(/*-----------------------------------DIALOG ACTION END-----------------------------------*/
+open class OrangeDialog(/*-----------------------------------DIALOG ACTION END-----------------------------------*/
     protected val builder: Builder
 ) :
     Dialog(builder.context!!, R.style.orange_DialogStyle) {
     var inputEditText: EditText? = null
     var secondInputEditText: EditText? = null
     var inputWarning: TextView? = null
-    var selectedIndiceList: MutableList<Int?>? = null
     var dialogNegative: TextView? = null
     var dialogPositive: TextView? = null
 
@@ -112,14 +110,14 @@ class OrangeDialog(/*-----------------------------------DIALOG ACTION END-------
             if (length == 0) {
                 return null
             }
-            if (builder.selectedIndices != null && builder.selectedIndices!!.size > 0) {
+            if (builder.selectedIndices != null && builder.selectedIndices!!.isNotEmpty()) {
                 val text =
                     arrayOfNulls<String>(builder.selectedIndices!!.size)
-                for (i in builder.selectedIndices!!.indices) {
-                    if (builder.isNeedInput && builder.selectedIndices!![i] == length - 1) {
-                        text[i] = inputValue
+                builder.selectedIndices?.forEachIndexed { index, i ->
+                    if (builder.isNeedInput && i == length - 1) {
+                        text[index] = inputValue
                     } else {
-                        text[i] = builder.items!![builder.selectedIndices!![i]!!]
+                        text[index] = builder.items!![i]
                     }
                 }
                 return text
@@ -140,38 +138,9 @@ class OrangeDialog(/*-----------------------------------DIALOG ACTION END-------
      *
      * @return null表示没有设置
      */
-    val multiChoiceIndexs: Array<Int>?
+    val multiChoiceIndexs: Set<Int>?
         get() = builder.selectedIndices
 
-    /**
-     * An alternate way to define a single callback.
-     */
-    interface SingleButtonCallback {
-        fun onClick(dialog: OrangeDialog, dialogAction: String)
-    }
-
-    /**
-     * A callback used for multi choice (check box) list dialogs.
-     */
-    interface ListCallbackSingleChoice {
-        fun onSelection(
-            dialog: OrangeDialog,
-            itemView: View,
-            which: Int,
-            text: CharSequence?
-        ): Boolean
-    }
-
-    /**
-     * A callback used for multi choice (check box) list dialogs.
-     */
-    interface ListCallbackMultiChoice {
-        fun onSelection(
-            dialog: OrangeDialog,
-            which: Array<Int>?,
-            text: Array<CharSequence?>?
-        ): Boolean
-    }
 
     /**
      * An alternate way to define a custom-view callback.
@@ -183,7 +152,7 @@ class OrangeDialog(/*-----------------------------------DIALOG ACTION END-------
         )
     }
 
-    override fun onCreate(savedInstanceState: Bundle ?) {
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setCancelable(builder.cancelable)
         setCanceledOnTouchOutside(builder.canceledOnTouchOutside)
@@ -240,8 +209,14 @@ class OrangeDialog(/*-----------------------------------DIALOG ACTION END-------
         } else {
             dialogPositive!!.visibility = View.GONE
         }
+
         if (builder.positiveTextColor != -1) {
-            dialogPositive!!.setTextColor(context.resources.getColor(builder.positiveTextColor))
+            dialogPositive!!.setTextColor(
+                ContextCompat.getColor(
+                    context,
+                    builder.positiveTextColor
+                )
+            )
         }
         if (builder.negativeText != null) {
             dialogNegative!!.visibility = View.VISIBLE
@@ -249,33 +224,44 @@ class OrangeDialog(/*-----------------------------------DIALOG ACTION END-------
         } else {
             dialogNegative!!.visibility = View.GONE
         }
-        if (builder.negativeTextColor != -1) {
-            dialogNegative!!.setTextColor(context.resources.getColor(builder.negativeTextColor))
-        }
-        if (builder.negativeBackground != -1) {
-            dialogNegative!!.setBackgroundResource(builder.negativeBackground)
-        }
-        if (builder.positiveBackground != -1) {
-            dialogPositive!!.setBackgroundResource(builder.positiveBackground)
-        }
-        dialogPositive!!.setOnClickListener {
-            if (builder.onPositiveCallback != null) {
-                builder.onPositiveCallback!!.onClick(
-                    this@OrangeDialog,
-                    DIALOG_ACTION_POSITIVE
-                )
+
+        //设置单个按钮颜色
+        if (dialogNegative!!.visibility == View.VISIBLE && dialogPositive!!.visibility == View.GONE) {
+            dialogNegative!!.setBackgroundResource(R.drawable.orange_dialog_btn_one_positive_selector)
+        } else if (dialogPositive!!.visibility == View.VISIBLE && dialogNegative!!.visibility == View.GONE) {
+            dialogPositive!!.setBackgroundResource(R.drawable.orange_dialog_btn_one_positive_selector)
+        } else if (dialogPositive!!.visibility == View.VISIBLE && dialogNegative!!.visibility == View.VISIBLE) {
+            if (builder.negativeBackground != -1) {
+                dialogNegative!!.setBackgroundResource(builder.negativeBackground)
             }
+            if (builder.positiveBackground != -1) {
+                dialogPositive!!.setBackgroundResource(builder.positiveBackground)
+            }
+        }
+
+        if (builder.negativeTextColor != -1) {
+            dialogNegative!!.setTextColor(
+                ContextCompat.getColor(
+                    context,
+                    builder.negativeTextColor
+                )
+            )
+        }
+
+        dialogPositive!!.setOnClickListener {
+            builder.onPositiveCallback?.invoke(
+                this@OrangeDialog,
+                DIALOG_ACTION_POSITIVE
+            )
             if (builder.autoDismiss) {
                 dismiss()
             }
         }
         dialogNegative!!.setOnClickListener {
-            if (builder.onNegativeCallback != null) {
-                builder.onNegativeCallback!!.onClick(
-                    this@OrangeDialog,
-                    DIALOG_ACTION_NEGATIVE
-                )
-            }
+            builder.onNegativeCallback?.invoke(
+                this@OrangeDialog,
+                DIALOG_ACTION_NEGATIVE
+            )
             if (builder.autoDismiss) {
                 dismiss()
             }
@@ -356,51 +342,48 @@ class OrangeDialog(/*-----------------------------------DIALOG ACTION END-------
     private fun initSingleChoiceLayout() {
         setContentView(R.layout.orange_dialog_choice)
         val recyclerView: RecyclerView = findViewById(R.id.recyclerView)
-        val itemAdapter: BaseQuickAdapter<String, BaseViewHolder> = object :
-            BaseQuickAdapter<String, BaseViewHolder>(
+        val itemAdapter: OrangeAdapter<String> = object :
+            OrangeAdapter<String>(
                 R.layout.orange_item_single_choice,
-                builder.items?.toList()
+                builder.items?.toMutableList()
             ) {
             override fun convert(
-                helper: BaseViewHolder,
-                item: String
+                holder: BaseViewHolder,
+                data: String
             ) { // 标题
-                helper.setText(R.id.singleName, item)
+                holder.setText(R.id.singleName, data)
                 // 选中&未选中
                 if (builder.selectedIndex > -1) {
-                    helper.getView<View>(R.id.singleChoice).isSelected =
-                        builder.selectedIndex == getIndexByString(item)
+                    holder.getView<View>(R.id.singleChoice).isSelected =
+                        builder.selectedIndex == getIndexByString(data)
                 } else {
-                    helper.getView<View>(R.id.singleChoice).isSelected = 0 == getIndexByString(item)
+                    holder.getView<View>(R.id.singleChoice).isSelected = 0 == getIndexByString(data)
                 }
             }
         }
-        itemAdapter.onItemClickListener =
-            BaseQuickAdapter.OnItemClickListener { adapter, view, position ->
-                // 已选择不需再刷新
-                if (builder.selectedIndex == position) {
-                    return@OnItemClickListener
-                }
-                val item = adapter.getItem(position) as String?
-                // 刷新UI
-                builder.selectedIndex = position
-                itemAdapter.notifyDataSetChanged()
-                // 回调给外面
-                if (builder.listCallbackSingleChoice != null) {
-                    builder.listCallbackSingleChoice!!.onSelection(
-                        this@OrangeDialog,
-                        view,
-                        position,
-                        item
-                    )
-                }
-                // 显示或者隐藏键盘
-                if (builder.isNeedInput && position == itemsLength - 1) {
-                    showKeyboard(this@OrangeDialog)
-                } else {
-                    hideKeyboard(this@OrangeDialog)
-                }
+        itemAdapter.setOnItemClickListener { adapter, view, position ->
+            if (builder.selectedIndex == position) {
+                return@setOnItemClickListener
             }
+            val item = adapter.getItem(position) as String?
+            // 刷新UI
+            builder.selectedIndex = position
+            itemAdapter.notifyDataSetChanged()
+            // 回调给外面
+            builder.listCallbackSingleChoice?.invoke(
+                this@OrangeDialog,
+                view,
+                position,
+                item
+            )
+            // 显示或者隐藏键盘
+            if (builder.isNeedInput && position == itemsLength - 1) {
+                showKeyboard(this@OrangeDialog)
+            } else {
+                hideKeyboard(this@OrangeDialog)
+            }
+        }
+
         recyclerView.adapter = itemAdapter
         // “其他”选项的时候需要输入自定义内容
         val dialogInput = findViewById<EditText>(R.id.dialogInput)
@@ -415,62 +398,43 @@ class OrangeDialog(/*-----------------------------------DIALOG ACTION END-------
     private fun initMultiChoiceLayout() {
         setContentView(R.layout.orange_dialog_choice)
         val recyclerView: RecyclerView = findViewById(R.id.recyclerView)
-        val itemAdapter: BaseQuickAdapter<String?, BaseViewHolder> = object :
-            BaseQuickAdapter<String?, BaseViewHolder>(
+        val itemAdapter: OrangeAdapter<String> = object :
+            OrangeAdapter<String>(
                 R.layout.orange_item_single_choice,
-              builder.items?.toList()
+                builder.items?.toMutableList()
             ) {
             override fun convert(
-                helper: BaseViewHolder,
-                item: String?
+                holder: BaseViewHolder,
+                data: String
             ) { // 标题
-                helper.setText(R.id.singleName, item)
+                holder.setText(R.id.singleName, data)
                 // 选中
-                if (builder.selectedIndices != null && builder.selectedIndices!!.isNotEmpty()) {
-                    helper.getView<View>(R.id.singleChoice)
-                        .isSelected = isSelectedByPosition(helper.layoutPosition) != -1
-                } else {
-                    helper.getView<View>(R.id.singleChoice).isSelected = false
-                }
+                holder.getView<View>(R.id.singleChoice)
+                    .isSelected = isSelectedByPosition(holder.layoutPosition)
             }
         }
         itemAdapter.setOnItemClickListener { _, _, position ->
             // 处理选择与不选择的逻辑
-            if (builder.selectedIndices != null && builder.selectedIndices!!.isNotEmpty()) {
-                if (selectedIndiceList == null) {
-                    selectedIndiceList = ArrayList()
-                }
-                if (isSelectedByPosition(position) != -1) { // 已选择->未选择
-                    selectedIndiceList!!.remove(position)
-                } else { // 未选择->已选择
-                    selectedIndiceList!!.add(position)
-                }
-            } else {
-                if (selectedIndiceList == null) {
-                    selectedIndiceList = ArrayList()
-                } else {
-                    selectedIndiceList!!.clear()
-                }
-                selectedIndiceList!!.add(position)
+            if (isSelectedByPosition(position)) { // 已选择->未选择
+                builder.selectedIndices?.remove(position)
+            } else { // 未选择->已选择
+                builder.selectedIndices?.add(position)
             }
-            // 刷新UI
-            builder.selectedIndices = arrayOf(selectedIndiceList!!.size)
-            selectedIndiceList?.addAll(builder.selectedIndices!!.toList())
             itemAdapter.notifyDataSetChanged()
             // 回调给外面
             if (builder.listCallbackMultiChoice != null) {
                 val text: Array<CharSequence?>
                 if (builder.selectedIndices != null && builder.selectedIndices!!.isNotEmpty()) {
                     text = arrayOfNulls(builder.selectedIndices!!.size)
-                    for (i in builder.selectedIndices!!.indices) {
-                        text[i] = builder.items!![builder.selectedIndices!![i]!!]
+                    builder.selectedIndices?.forEachIndexed{ index, i ->
+                        text[index] = builder.items!![i]
                     }
                 } else {
                     text = arrayOf()
                 }
-                builder.listCallbackMultiChoice!!.onSelection(
+                builder.listCallbackMultiChoice!!.invoke(
                     this@OrangeDialog,
-                    builder.selectedIndices,
+                    builder.selectedIndices!!,
                     text
                 )
             }
@@ -489,12 +453,6 @@ class OrangeDialog(/*-----------------------------------DIALOG ACTION END-------
         dialogInput.visibility = if (builder.isNeedInput) View.VISIBLE else View.GONE
         if (builder.isNeedInput) {
             hideKeyboard(this) // 默认不显示键盘
-        }
-        // 数组转换成List，List有增删功能
-        if (builder.selectedIndices != null && builder.selectedIndices!!.isNotEmpty()) {
-            val asList =
-                listOf(*builder.selectedIndices!!)
-            selectedIndiceList = ArrayList(asList)
         }
     }
 
@@ -527,7 +485,7 @@ class OrangeDialog(/*-----------------------------------DIALOG ACTION END-------
     }
 
     private val itemsLength: Int
-        private get() = if (builder.items != null && builder.items!!.isNotEmpty()) {
+        get() = if (builder.items != null && builder.items!!.isNotEmpty()) {
             builder.items!!.size
         } else 0
 
@@ -536,17 +494,8 @@ class OrangeDialog(/*-----------------------------------DIALOG ACTION END-------
      *
      * @return -1表示未选中
      */
-    private fun isSelectedByPosition(position: Int): Int {
-        var index = -1
-        if (builder.selectedIndices != null && builder.selectedIndices!!.isNotEmpty()) {
-            for (i in builder.selectedIndices!!.indices) {
-                if (position == builder.selectedIndices!![i]) {
-                    index = i
-                    break
-                }
-            }
-        }
-        return index
+    private fun isSelectedByPosition(position: Int): Boolean {
+        return builder.selectedIndices?.contains(position) ?: false
     }
 
     private fun getIndexByString(content: String): Int {
@@ -572,12 +521,16 @@ class OrangeDialog(/*-----------------------------------DIALOG ACTION END-------
         var content: CharSequence? = null
         var positiveText: CharSequence? = null
         var negativeText: CharSequence? = null
+
         @ColorRes
         var positiveTextColor = -1
+
         @ColorRes
         var negativeTextColor = -1
+
         @DrawableRes
         var positiveBackground = -1
+
         @DrawableRes
         var negativeBackground = -1
         var cancelable = true
@@ -590,6 +543,7 @@ class OrangeDialog(/*-----------------------------------DIALOG ACTION END-------
         var titleEllipsize: TruncateAt? = null
         var contentLines = -1
         var contentEllipsize: TruncateAt? = null
+
         /*-----------------------------------INPUT BEGIN-----------------------------------*/
         var hint: CharSequence? = null
         var secondHint: CharSequence? = null
@@ -600,20 +554,24 @@ class OrangeDialog(/*-----------------------------------DIALOG ACTION END-------
         var inputFocus = false
         var inputType = -1
         var inputSize = -1
+
         /*-----------------------------------INPUT END-----------------------------------*/ /*-----------------------------------IMAGE BEGIN-----------------------------------*/
         @DrawableRes
         var iconResId = -1
+
         /*-----------------------------------IMAGE END-----------------------------------*/ /*-----------------------------------CHOICE BEGIN-----------------------------------*/
         var items: Array<String>? = null
         var isNeedInput = false
         var selectedIndex = -1
-        var selectedIndices: Array<Int>? = null
+        var selectedIndices: ArraySet<Int>? = ArraySet()
         var listCallbackSingleChoice: ListCallbackSingleChoice? = null
         var listCallbackMultiChoice: ListCallbackMultiChoice? = null
+
         /*-----------------------------------CHOICE END-----------------------------------*/ /*-----------------------------------LIST BEGIN-----------------------------------*/
         var adapter: RecyclerView.Adapter<*>? = null
         var layoutManager: RecyclerView.LayoutManager? = null
         var listMaxHeight = 0
+
         /*-----------------------------------LIST END-----------------------------------*/ /*-----------------------------------CUSTOM BEGIN-----------------------------------*/
         var customLayoutId = -1
         var onCustomViewCallback: CustomViewCallBack? = null
@@ -956,7 +914,7 @@ class OrangeDialog(/*-----------------------------------DIALOG ACTION END-------
         /**
          * 默认多项选择
          */
-        fun selectedIndexMultiChoice(selectedIndices: Array<Int>?): Builder {
+        fun selectedIndexMultiChoice(selectedIndices: ArraySet<Int>?): Builder {
             this.selectedIndices = selectedIndices
             return this
         }
@@ -986,10 +944,12 @@ class OrangeDialog(/*-----------------------------------DIALOG ACTION END-------
          * @param callback        多选回调
          */
         fun itemsCallbackMultiChoice(
-            selectedIndices: Array<Int>?,
+            selectedIndices: ArraySet<Int>?,
             callback: ListCallbackMultiChoice?
         ): Builder {
-            this.selectedIndices = selectedIndices
+            selectedIndices?.let {
+                this.selectedIndices = selectedIndices
+            }
             listCallbackSingleChoice = null
             listCallbackMultiChoice = callback
             return this
@@ -1056,37 +1016,43 @@ class OrangeDialog(/*-----------------------------------DIALOG ACTION END-------
          * 输入弹窗
          */
         const val DIALOG_TYPE_INPUT = 0x1
+
         /**
          * 图片弹窗
          */
         const val DIALOG_TYPE_IMAGE = 0x2
+
         /**
          * 普通消息弹窗
          */
         const val DIALOG_TYPE_MESSAGE = 0x3
+
         /**
          * 单选列表弹窗
          */
         const val DIALOG_TYPE_SINGLE_CHOICE = 0x4
+
         /**
          * 多选列表弹窗
          */
         const val DIALOG_TYPE_MULTI_CHOICE = 0x5
+
         /**
          * 基础列表弹窗
          */
         const val DIALOG_TYPE_LIST = 0x6
+
         /**
          * 自定义弹窗
          */
         const val DIALOG_TYPE_CUSTOM = 0x7
+
         /*-----------------------------------DIALOG TYPE END-----------------------------------*/ /*-----------------------------------DIALOG ACTION BEGIN-----------------------------------*/
         const val DIALOG_ACTION_POSITIVE = "positive"
         const val DIALOG_ACTION_NEGATIVE = "negative"
     }
 
     init {
-        // Don't keep a Context reference in the Builder after this point
         builder.context = null
     }
 }

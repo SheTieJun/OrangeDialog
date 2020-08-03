@@ -10,13 +10,30 @@ need :
 ```
 
 ```kotlin
-      OrangeDialogBuilder(
-            this, DIALOG_TYPE_IMAGE,
-            title = "提示2",
-            content = "确定要取消下载所选内容吗?2",
-            onPositive = SingleButtonCallback { _, _ ->
-                Toast.makeText(this@MainActivity,"确定",Toast.LENGTH_SHORT).show()
-            }).show()
+         OrangeDialogBuilder(
+               this, DIALOG_TYPE_IMAGE,
+               title = "温馨提示",
+               content = "确定要取消下载所选内容吗?",
+               positiveText = "确定删除",
+               onPositive = object : SingleButtonCallback {
+                   override fun invoke(dialog: OrangeDialog, dialogAction: String) {
+                       Toast.makeText(this@MainActivity, "确定", Toast.LENGTH_SHORT).show()
+                   }
+               }).apply {
+
+               //可以继续设置相关参数
+           }.show()
+
+           orangeDialog(
+               this,
+               title = "提示",
+               content = "确定要取消下载所选内容吗?",
+               positiveText = "确定删除",
+               onPositive = object : SingleButtonCallback {
+                   override fun invoke(dialog: OrangeDialog, dialogAction: String) {
+                       Toast.makeText(this@MainActivity, "确定", Toast.LENGTH_SHORT).show()
+                   }
+               })
 ```
 
 

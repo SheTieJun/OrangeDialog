@@ -6,9 +6,6 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 
-/**
- * @author Aidan Follestad (afollestad)
- */
 object DialogUtils {
 
 
@@ -18,7 +15,7 @@ object DialogUtils {
         editText.post {
             viewRequestFocus(editText)
             val imm =
-                dialog.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                dialog.context.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
             imm?.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT)
         }
     }
@@ -34,7 +31,7 @@ object DialogUtils {
             return
         }
         val imm =
-            dialog.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            dialog.context.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
         if (imm != null) {
             val currentFocus = dialog.currentFocus
             var windowToken: IBinder? = null

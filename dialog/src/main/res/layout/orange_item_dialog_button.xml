@@ -8,15 +8,15 @@
             android:gravity="center"
             android:paddingLeft="15dp"
             android:paddingRight="15dp"
-            android:paddingBottom="20dp"
             android:paddingTop="10dp"
-           >
+            android:paddingBottom="10dp">
 
         <TextView
                 android:id="@+id/dialogNegative"
                 style="@style/orange_DialogStyle.Negative"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
                 android:layout_marginEnd="15dp"
                 android:gravity="center"
                 android:text="取消" />
@@ -24,8 +24,9 @@
         <TextView
                 android:id="@+id/dialogPositive"
                 style="@style/orange_DialogStyle.Positive"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
                 android:layout_toEndOf="@+id/dialogNegative"
                 android:text="确定"
                 android:textColor="@color/white" />

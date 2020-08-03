@@ -6,9 +6,6 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 
 
-/**
- * @author shetj
- */
 class MaxHeightRecyclerView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
@@ -28,13 +25,13 @@ class MaxHeightRecyclerView @JvmOverloads constructor(
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        var heightMeasureSpec = heightMeasureSpec
+        var heightMeasureSpecE = heightMeasureSpec
         val measuredHeight = MeasureSpec.getSize(heightMeasureSpec)
         if (maxHeight in 1 until measuredHeight) {
             val measureMode = MeasureSpec.getMode(heightMeasureSpec)
-            heightMeasureSpec = MeasureSpec.makeMeasureSpec(maxHeight, measureMode)
+            heightMeasureSpecE = MeasureSpec.makeMeasureSpec(maxHeight, measureMode)
         }
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+        super.onMeasure(widthMeasureSpec, heightMeasureSpecE)
     }
 
     fun setMaxHeight(maxHeight: Int) {

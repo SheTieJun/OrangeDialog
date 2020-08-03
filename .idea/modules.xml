@@ -6,8 +6,11 @@
       <module fileurl="file://$PROJECT_DIR$/app/Dialog-app.iml" filepath="$PROJECT_DIR$/app/Dialog-app.iml" />
       <module fileurl="file://$PROJECT_DIR$/dialog/Dialog-dialog.iml" filepath="$PROJECT_DIR$/dialog/Dialog-dialog.iml" />
       <module fileurl="file://$PROJECT_DIR$/OrangeDialog.iml" filepath="$PROJECT_DIR$/OrangeDialog.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/OrangeDialog-app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/OrangeDialog-app.iml" group="OrangeDialog/app" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/dialog/OrangeDialog-dialog.iml" filepath="$PROJECT_DIR$/.idea/modules/dialog/OrangeDialog-dialog.iml" group="OrangeDialog/dialog" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/dialog/dialog.iml" filepath="$PROJECT_DIR$/dialog/dialog.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/github-OrangeDialog.iml" filepath="$PROJECT_DIR$/.idea/modules/github-OrangeDialog.iml" group="OrangeDialog" />
     </modules>
   </component>
 </project>
