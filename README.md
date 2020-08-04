@@ -4,143 +4,104 @@
 [![](https://jitpack.io/v/SheTieJun/OrangeDialog.svg)](https://jitpack.io/#SheTieJun/OrangeDialog)
 need :
 ```groovy
-    implementation "com.github.SheTieJun:OrangeDialog:0.0.1"
-    implementation 'androidx.recyclerview:recyclerview:1.1.0'
-    implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.49-androidx'
+    implementation "com.github.SheTieJun:OrangeDialog:+"
+
 ```
+
 
 ```kotlin
-         OrangeDialogBuilder(
-               this, DIALOG_TYPE_IMAGE,
-               title = "温馨提示",
-               content = "确定要取消下载所选内容吗?",
-               positiveText = "确定删除",
-               onPositive = object : SingleButtonCallback {
-                   override fun invoke(dialog: OrangeDialog, dialogAction: String) {
-                       Toast.makeText(this@MainActivity, "确定", Toast.LENGTH_SHORT).show()
-                   }
-               }).apply {
+        OrangeDialogBuilder(
+            this, DialogType.IMAGE,
+            title = "温馨提示",
+            content = "确定要取消下载所选内容吗?",
+            positiveText = "确定删除",
+            onPositive = object : SingleButtonCallback {
+                override fun invoke(dialog: OrangeDialog, dialogAction: String) {
+                    Toast.makeText(this@MainActivity, "确定", Toast.LENGTH_SHORT).show()
+                }
+            }).show()
 
-               //可以继续设置相关参数
-           }.show()
-
-           orangeDialog(
-               this,
-               title = "提示",
-               content = "确定要取消下载所选内容吗?",
-               positiveText = "确定删除",
-               onPositive = object : SingleButtonCallback {
-                   override fun invoke(dialog: OrangeDialog, dialogAction: String) {
-                       Toast.makeText(this@MainActivity, "确定", Toast.LENGTH_SHORT).show()
-                   }
-               })
-```
+        orangeDialog(
+            this,
+            title = "提示",
+            content = "确定要取消下载所选内容吗?",
+            positiveText = "确定删除",
+            onPositive = object : SingleButtonCallback {
+                override fun invoke(dialog: OrangeDialog, dialogAction: String) {
+                    Toast.makeText(this@MainActivity, "确定", Toast.LENGTH_SHORT).show()
+                }
+            })
 
 
-``` java
-  OrangeDialog.Builder(this)
-            .title("提示")
-            .dialogType(DIALOG_TYPE_IMAGE)
-            .content("确定要取消下载所选内容吗？")
-            .negativeText("取消")
-            .positiveText("确定删除")
-            .setPositiveBackground(R.drawable.orange_dialog_btn_error_positive_selector)
-            .onPositive { _, _ ->
+        orangeImageDialog(
+            context = this,
+            title = "orangeImageDialog",
+            content = "确定要取消下载所选内容吗",
+            negativeText = "取消",
+            positiveText = "保存"
+        )
 
+        orangeMsgDialog(
+            context = this,
+            title = "orangeMsgDialog",
+            content = "确定要取消下载所选内容吗",
+            positiveText = "确定删除"
+        )
+
+        orangeSingeDialog(
+            context = this,
+            title = "orangeSingeDialog",
+            content = "这是测试orangeSingeDialog",
+            items = arrayOf("哈哈", "嘿嘿", "嘿哈"),
+            selectIndex = -1,
+            negativeText = "取消",
+            positiveText = "保存",
+            singleChoiceCallBack = object : SingleChoiceCallback {
+                override fun invoke(
+                    dialog: OrangeDialog,
+                    itemView: View,
+                    which: Int,
+                    text: CharSequence?
+                ): Boolean {
+                    Toast.makeText(this@MainActivity, text, Toast.LENGTH_SHORT).show()
+                    return true
+                }
             }
-            .show()
+        )
 
-        OrangeDialog.Builder(this)
-            .title("提示")
-            .content("确定要取消下载所选内容吗？")
-            .negativeText("取消")
-            .positiveText("确定删除")
-            .setPositiveBackground(R.drawable.orange_dialog_btn_error_positive_selector)
-            .onPositive { _, _ ->
-
-            }
-            .show()
-
-        OrangeDialog.Builder(this)
-            .title("提示")
-            .dialogType(DIALOG_TYPE_MESSAGE)
-            .content("确定要取消下载所选内容吗？")
-            .negativeText("取消")
-            .positiveText("确定删除")
-            .setPositiveBackground(R.drawable.orange_dialog_btn_error_positive_selector)
-            .onPositive { _, _ ->
-
-            }
-            .show()
-
-        OrangeDialog.Builder(this)
-            .title("提示")
-            .dialogType(DIALOG_TYPE_SINGLE_CHOICE)
-            .negativeText("取消")
-            .positiveText("确定删除")
-            .items(arrayOf("哈哈","嘿嘿","嘿哈"))
-            .itemsCallbackSingleChoice(-1) { dialog, itemView, which, text ->
-                Toast.makeText(this,"选择：$text",Toast.LENGTH_SHORT).show()
-                return@itemsCallbackSingleChoice true
-            }
-            .setPositiveBackground(R.drawable.orange_dialog_btn_error_positive_selector)
-            .onPositive { _, _ ->
-
-            }
-            .show()
+        orangeMultiDialog(context = this,
+            title = "orangeMultiDialog",
+            content = "这是测试orangeMultiDialog",
+            items = arrayOf("哈哈", "嘿嘿", "嘿哈", "嘿嘿哈哈"),
+            multiChoiceCallback = object : MultiChoiceCallback {
+                override fun invoke(
+                    dialog: OrangeDialog,
+                    which: androidx.collection.ArraySet<Int>?,
+                    texts: Array<CharSequence?>?
+                ): Boolean {
+                    Toast.makeText(this@MainActivity, texts.toJson(), Toast.LENGTH_SHORT).show()
+                    return true
+                }
+            })
 
 
-        OrangeDialog.Builder(this)
-            .title("提示")
-            .dialogType(DIALOG_TYPE_MULTI_CHOICE)
-            .negativeText("取消")
-            .positiveText("确定删除")
-            .items(arrayOf("哈哈","嘿嘿","嘿哈","嘿嘿哈哈"))
-            .itemsCallbackMultiChoice(null) { dialog, which, text ->
-                Toast.makeText(this,"选择：${text.size}个",Toast.LENGTH_SHORT).show()
-                return@itemsCallbackMultiChoice true
-            }
-            .setPositiveBackground(R.drawable.orange_dialog_btn_error_positive_selector)
-            .onPositive { _, _ ->
-            }
-            .show()
 
-        OrangeDialog.Builder(this)
-            .title("下载提示")
-            .content("非WIFI情况下暂停下载，如需继续，请到设置中开启限制")
-            .negativeText("取消")
-            .positiveText("去设置")
-            .onPositive { _, _ ->
-                Toast.makeText(this,"去设置",Toast.LENGTH_SHORT).show()
-            }
-            .show()
+        orangeInputDialog(
+            context = this,
+            title = "orangeInputDialog",
+            content = "名字最长为15个字",
+            inputValue = "OrangeDialog",
+            negativeText = "取消",
+            positiveText = "保存"
+        )
 
-        OrangeDialog.Builder(this)
-            .title("未完成认证，无法上传视频！")
-            .positiveText("确定")
-            .setPositiveBackground(R.drawable.orange_dialog_btn_positive_selector)
-            .onPositive { dialog, dialogAction -> dialog.dismiss() }
-            .show()
-
-        OrangeDialog.Builder(this)
-            .title("提示")
-            .content("视频出了一点小问题")
-            .build()
-            .show()
-        OrangeDialog.Builder(this)
-            .dialogType(DIALOG_TYPE_INPUT)
-            .title("输入名字")
-            .content("名字最长为15个字")
-            .inputMax(15)
-            .inputValue("OrangeDialog")
-            .inputFocus(true)
-            .needInput(true)
-            .negativeText("取消")
-            .positiveText("保存")
-            .onPositive { dialog, dialogAction ->
-                val name = dialog.inputEditText?.text.toString().trim()
-                Toast.makeText(this,name,Toast.LENGTH_SHORT).show()
-            }
-            .show()
+        orangeCustomDialog(
+            context = this,
+            title = "orangeCustomDialog",
+            content = "这是测试orangeCustomDialog",
+            negativeText = "取消",
+            positiveText = "保存",
+            customLayoutId = R.layout.test_layout
+        )
 
 ```

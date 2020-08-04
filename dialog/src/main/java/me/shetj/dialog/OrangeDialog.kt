@@ -23,7 +23,6 @@ import androidx.recyclerview.widget.RecyclerView
 import me.shetj.dialog.DialogUtils.hideKeyboard
 import me.shetj.dialog.DialogUtils.showKeyboard
 import me.shetj.dialog.ScreenUtil.dip2px
-import kotlin.collections.ArrayList
 
 open class OrangeDialog(/*-----------------------------------DIALOG ACTION END-----------------------------------*/
     protected val builder: Builder
@@ -157,14 +156,13 @@ open class OrangeDialog(/*-----------------------------------DIALOG ACTION END--
         setCancelable(builder.cancelable)
         setCanceledOnTouchOutside(builder.canceledOnTouchOutside)
         when (builder.dialogType) {
-            DIALOG_TYPE_INPUT -> initInputLayout()
-            DIALOG_TYPE_IMAGE -> initImageLayout()
-            DIALOG_TYPE_SINGLE_CHOICE -> initSingleChoiceLayout()
-            DIALOG_TYPE_MULTI_CHOICE -> initMultiChoiceLayout()
-            DIALOG_TYPE_LIST -> initListLayout()
-            DIALOG_TYPE_CUSTOM -> initCustomLayout()
-            DIALOG_TYPE_MESSAGE -> initMessageLayout()
-            else -> initMessageLayout()
+            DialogType.INPUT -> initInputLayout()
+            DialogType.IMAGE -> initImageLayout()
+            DialogType.SINGLE_CHOICE -> initSingleChoiceLayout()
+            DialogType.MULTI_CHOICE -> initMultiChoiceLayout()
+            DialogType.LIST -> initListLayout()
+            DialogType.CUSTOM -> initCustomLayout()
+            DialogType.MESSAGE -> initMessageLayout()
         }
         // 通用控件
         val dialogTitle = findViewById<TextView>(R.id.dialogTitle)
@@ -367,7 +365,7 @@ open class OrangeDialog(/*-----------------------------------DIALOG ACTION END--
             }
             val item = adapter.getItem(position) as String?
             // 刷新UI
-            builder.selectedIndex = position
+            builder.setSelectedIndexSingleChoice(position)
             itemAdapter.notifyDataSetChanged()
             // 回调给外面
             builder.listCallbackSingleChoice?.invoke(
@@ -426,7 +424,7 @@ open class OrangeDialog(/*-----------------------------------DIALOG ACTION END--
                 val text: Array<CharSequence?>
                 if (builder.selectedIndices != null && builder.selectedIndices!!.isNotEmpty()) {
                     text = arrayOfNulls(builder.selectedIndices!!.size)
-                    builder.selectedIndices?.forEachIndexed{ index, i ->
+                    builder.selectedIndices?.forEachIndexed { index, i ->
                         text[index] = builder.items!![i]
                     }
                 } else {
@@ -513,83 +511,119 @@ open class OrangeDialog(/*-----------------------------------DIALOG ACTION END--
         return index
     }
 
-    class Builder
-    /**
-     * 初始化一些样式
-     */(var context: Context?) {
+    class Builder(var context: Context?) {
         var title: CharSequence? = null
+            private set
         var content: CharSequence? = null
+            private set
         var positiveText: CharSequence? = null
+            private set
         var negativeText: CharSequence? = null
+            private set
 
         @ColorRes
         var positiveTextColor = -1
+            private set
 
         @ColorRes
         var negativeTextColor = -1
+            private set
 
         @DrawableRes
         var positiveBackground = -1
+            private set
 
         @DrawableRes
         var negativeBackground = -1
+            private set
         var cancelable = true
+            private set
         var canceledOnTouchOutside = true
-        var dialogType = DIALOG_TYPE_MESSAGE
+            private set
+        var dialogType: DialogType = DialogType.MESSAGE
+            private set
         var onPositiveCallback: SingleButtonCallback? = null
+            private set
         var onNegativeCallback: SingleButtonCallback? = null
+            private set
         var autoDismiss = true
+            private set
         var titleLines = -1
+            private set
         var titleEllipsize: TruncateAt? = null
+            private set
         var contentLines = -1
+            private set
         var contentEllipsize: TruncateAt? = null
+            private set
 
         /*-----------------------------------INPUT BEGIN-----------------------------------*/
         var hint: CharSequence? = null
+            private set
         var secondHint: CharSequence? = null
+            private set
         var inputValue: CharSequence? = null
+            private set
         var secondInputValue: CharSequence? = null
+            private set
         var secondInputVisible = false
+            private set
         var inputHeight = -1
+            private set
         var inputFocus = false
+            private set
         var inputType = -1
+            private set
         var inputSize = -1
+            private set
 
         /*-----------------------------------INPUT END-----------------------------------*/ /*-----------------------------------IMAGE BEGIN-----------------------------------*/
         @DrawableRes
         var iconResId = -1
+            private set
 
         /*-----------------------------------IMAGE END-----------------------------------*/ /*-----------------------------------CHOICE BEGIN-----------------------------------*/
         var items: Array<String>? = null
+            private set
         var isNeedInput = false
+            private set
         var selectedIndex = -1
+            private set
         var selectedIndices: ArraySet<Int>? = ArraySet()
-        var listCallbackSingleChoice: ListCallbackSingleChoice? = null
-        var listCallbackMultiChoice: ListCallbackMultiChoice? = null
+            private set
+        var listCallbackSingleChoice: SingleChoiceCallback? = null
+            private set
+        var listCallbackMultiChoice: MultiChoiceCallback? = null
+            private set
 
         /*-----------------------------------CHOICE END-----------------------------------*/ /*-----------------------------------LIST BEGIN-----------------------------------*/
         var adapter: RecyclerView.Adapter<*>? = null
+            private set
         var layoutManager: RecyclerView.LayoutManager? = null
+            private set
         var listMaxHeight = 0
+            private set
 
         /*-----------------------------------LIST END-----------------------------------*/ /*-----------------------------------CUSTOM BEGIN-----------------------------------*/
         var customLayoutId = -1
+            private set
         var onCustomViewCallback: CustomViewCallBack? = null
+            private set
         /*-----------------------------------CUSTOM END-----------------------------------*/
         /**
          * 标题
          *
          * @param titleRes 资源id
          */
-        fun title(@StringRes titleRes: Int): Builder {
-            title(context!!.getText(titleRes))
+        fun setTitle(@StringRes titleRes: Int): Builder {
+            setTitle(context!!.getText(titleRes))
             return this
         }
 
         /**
          * 标题
          */
-        fun title(title: CharSequence?): Builder {
+        fun setTitle(title: CharSequence?): Builder {
             this.title = title
             return this
         }
@@ -602,7 +636,7 @@ open class OrangeDialog(/*-----------------------------------DIALOG ACTION END--
          * 、[TextUtils.TruncateAt.END]
          * 、[TextUtils.TruncateAt.MARQUEE]
          */
-        fun titleLinesAndEllipsize(
+        fun setTitleLinesAndEllipsize(
             lines: Int,
             where: TruncateAt?
         ): Builder {
@@ -616,15 +650,15 @@ open class OrangeDialog(/*-----------------------------------DIALOG ACTION END--
          *
          * @param contentRes 资源id
          */
-        fun content(@StringRes contentRes: Int): Builder {
-            content(context!!.getText(contentRes))
+        fun setContent(@StringRes contentRes: Int): Builder {
+            setContent(context!!.getText(contentRes))
             return this
         }
 
         /**
          * 内容，一般提示性性质
          */
-        fun content(content: CharSequence?): Builder {
+        fun setContent(content: CharSequence?): Builder {
             this.content = content
             return this
         }
@@ -637,7 +671,7 @@ open class OrangeDialog(/*-----------------------------------DIALOG ACTION END--
          * 、[TextUtils.TruncateAt.END]
          * 、[TextUtils.TruncateAt.MARQUEE]
          */
-        fun contentLinesAndEllipsize(
+        fun setContentLinesAndEllipsize(
             lines: Int,
             where: TruncateAt?
         ): Builder {
@@ -651,11 +685,11 @@ open class OrangeDialog(/*-----------------------------------DIALOG ACTION END--
          *
          * @param positiveRes 资源id
          */
-        fun positiveText(@StringRes positiveRes: Int): Builder {
+        fun setPositiveText(@StringRes positiveRes: Int): Builder {
             if (positiveRes == 0) {
                 return this
             }
-            positiveText(context!!.getText(positiveRes))
+            setPositiveText(context!!.getText(positiveRes))
             return this
         }
 
@@ -678,7 +712,7 @@ open class OrangeDialog(/*-----------------------------------DIALOG ACTION END--
         /**
          * 确定按钮
          */
-        fun positiveText(message: CharSequence?): Builder {
+        fun setPositiveText(message: CharSequence?): Builder {
             positiveText = message
             return this
         }
@@ -686,7 +720,7 @@ open class OrangeDialog(/*-----------------------------------DIALOG ACTION END--
         /**
          * 确定按钮颜色
          */
-        fun positiveTextColor(@ColorRes positiveTextColor: Int): Builder {
+        fun setPositiveTextColor(@ColorRes positiveTextColor: Int): Builder {
             this.positiveTextColor = positiveTextColor
             return this
         }
@@ -696,16 +730,16 @@ open class OrangeDialog(/*-----------------------------------DIALOG ACTION END--
          *
          * @param negativeRes 资源id
          */
-        fun negativeText(@StringRes negativeRes: Int): Builder {
+        fun setNegativeText(@StringRes negativeRes: Int): Builder {
             return if (negativeRes == 0) {
                 this
-            } else negativeText(context!!.getText(negativeRes))
+            } else setNegativeText(context!!.getText(negativeRes))
         }
 
         /**
          * 取消按钮
          */
-        fun negativeText(message: CharSequence?): Builder {
+        fun setNegativeText(message: CharSequence?): Builder {
             negativeText = message
             return this
         }
@@ -713,28 +747,28 @@ open class OrangeDialog(/*-----------------------------------DIALOG ACTION END--
         /**
          * 取消按钮颜色
          */
-        fun negativeTextColor(@ColorRes negativeTextColor: Int): Builder {
+        fun setNegativeTextColor(@ColorRes negativeTextColor: Int): Builder {
             this.negativeTextColor = negativeTextColor
             return this
         }
 
-        fun cancelable(cancelable: Boolean): Builder {
+        fun setCancelable(cancelable: Boolean): Builder {
             this.cancelable = cancelable
             canceledOnTouchOutside = cancelable
             return this
         }
 
-        fun canceledOnTouchOutside(canceledOnTouchOutside: Boolean): Builder {
+        fun setCanceledOnTouchOutside(canceledOnTouchOutside: Boolean): Builder {
             this.canceledOnTouchOutside = canceledOnTouchOutside
             return this
         }
 
         /**
-         * 弹窗的方式，默认是DIALOG_TYPE_MESSAGE
+         * 弹窗的方式，默认是MESSAGE
          *
-         * @param dialogType [OrangeDialog.DIALOG_TYPE_MESSAGE]、[OrangeDialog.DIALOG_TYPE_IMAGE]、[OrangeDialog.DIALOG_TYPE_INPUT]
+         * @param dialogType = [DialogType]
          */
-        fun dialogType(dialogType: Int): Builder {
+        fun setDialogType(dialogType: DialogType): Builder {
             this.dialogType = dialogType
             return this
         }
@@ -742,7 +776,7 @@ open class OrangeDialog(/*-----------------------------------DIALOG ACTION END--
         /**
          * 确定按钮的callback
          */
-        fun onPositive(callback: SingleButtonCallback?): Builder {
+        fun setonPositiveCallBack(callback: SingleButtonCallback?): Builder {
             onPositiveCallback = callback
             return this
         }
@@ -750,7 +784,7 @@ open class OrangeDialog(/*-----------------------------------DIALOG ACTION END--
         /**
          * 取消按钮的callback
          */
-        fun onNegative(callback: SingleButtonCallback?): Builder {
+        fun setOnNegativeCallBack(callback: SingleButtonCallback?): Builder {
             onNegativeCallback = callback
             return this
         }
@@ -758,134 +792,134 @@ open class OrangeDialog(/*-----------------------------------DIALOG ACTION END--
         /**
          * 点击按钮是否自动触发dismiss，默认自动触发
          */
-        fun autoDismiss(autoDismiss: Boolean): Builder {
+        fun setAutoDismiss(autoDismiss: Boolean): Builder {
             this.autoDismiss = autoDismiss
             return this
         }
 
         /**
          * 设置输入框高度
-         * <P>dialogType为[OrangeDialog.DIALOG_TYPE_INPUT]才生效</P>
+         * <P>dialogType为[DialogType.INPUT]才生效</P>
          */
-        fun inputHeight(inputHeight: Int): Builder {
+        fun setInputHeight(inputHeight: Int): Builder {
             this.inputHeight = inputHeight
             return this
         }
 
         /**
          * 设置输入框高度
-         * <P>dialogType为[OrangeDialog.DIALOG_TYPE_INPUT]才生效</P>
+         * <P>dialogType为[DialogType.INPUT]才生效</P>
          */
-        fun inputFocus(inputFocus: Boolean): Builder {
+        fun setInputFocus(inputFocus: Boolean): Builder {
             this.inputFocus = inputFocus
             return this
         }
 
         /**
          * 设置输入方式
-         * <P>dialogType为[OrangeDialog.DIALOG_TYPE_INPUT]才生效</P>
+         * <P>dialogType为[DialogType.INPUT]才生效</P>
          */
-        fun inputType(inputType: Int): Builder {
+        fun setInputType(inputType: Int): Builder {
             this.inputType = inputType
             return this
         }
 
         /**
          * 输入框提示内容
-         * <P>dialogType为[OrangeDialog.DIALOG_TYPE_INPUT]才生效</P>
+         * <P>dialogType为[DialogType.INPUT]才生效</P>
          *
          * @param hintRes 资源id
          */
-        fun hint(@StringRes hintRes: Int): Builder {
-            hint(context!!.getText(hintRes))
+        fun setHint(@StringRes hintRes: Int): Builder {
+            setHint(context!!.getText(hintRes))
             return this
         }
 
         /**
          * 输入框提示内容
-         * <P>dialogType为[OrangeDialog.DIALOG_TYPE_INPUT]才生效</P>
+         * <P>dialogType为[DialogType.INPUT]才生效</P>
          */
-        fun hint(hint: CharSequence?): Builder {
+        fun setHint(hint: CharSequence?): Builder {
             this.hint = hint
             return this
         }
 
         /**
          * 次级输入框提示内容
-         * <P>dialogType为[OrangeDialog.DIALOG_TYPE_INPUT]才生效</P>
+         * <P>dialogType为[DialogType.INPUT]才生效</P>
          *
          * @param secondHintRes 资源id
          */
-        fun secondHint(@StringRes secondHintRes: Int): Builder {
-            secondHint(context!!.getText(secondHintRes))
+        fun setSecondHint(@StringRes secondHintRes: Int): Builder {
+            setSecondHint(context!!.getText(secondHintRes))
             return this
         }
 
         /**
          * 次级输入框提示内容
-         * <P>dialogType为[OrangeDialog.DIALOG_TYPE_INPUT]才生效</P>
+         * <P>dialogType为[DialogType.INPUT]才生效</P>
          */
-        fun secondHint(secondHint: CharSequence?): Builder {
+        fun setSecondHint(secondHint: CharSequence?): Builder {
             this.secondHint = secondHint
             return this
         }
 
         /**
          * 输入框输入内容
-         * <P>dialogType为[OrangeDialog.DIALOG_TYPE_INPUT]才生效</P>
+         * <P>dialogType为[DialogType.INPUT]才生效</P>
          *
          * @param inputValueRes 资源id
          */
-        fun inputValue(@StringRes inputValueRes: Int): Builder {
-            inputValue(context!!.getText(inputValueRes))
+        fun setInputValue(@StringRes inputValueRes: Int): Builder {
+            setInputValue(context!!.getText(inputValueRes))
             return this
         }
 
         /**
          * 输入框输入内容
-         * <P>dialogType为[OrangeDialog.DIALOG_TYPE_INPUT]才生效</P>
+         * <P>dialogType为[DialogType.INPUT]才生效</P>
          */
-        fun inputValue(inputValue: CharSequence?): Builder {
+        fun setInputValue(inputValue: CharSequence?): Builder {
             this.inputValue = inputValue
             return this
         }
 
         /**
          * 次级输入框输入内容
-         * <P>dialogType为[OrangeDialog.DIALOG_TYPE_INPUT]才生效</P>
+         * <P>dialogType为[DialogType.INPUT]才生效</P>
          *
          * @param secondInputValueRes 资源id
          */
-        fun secondInputValue(@StringRes secondInputValueRes: Int): Builder {
-            secondInputValue(context!!.getText(secondInputValueRes))
+        fun setSecondInputValue(@StringRes secondInputValueRes: Int): Builder {
+            setSecondInputValue(context!!.getText(secondInputValueRes))
             return this
         }
 
         /**
          * 次级输入框输入内容
-         * <P>dialogType为[OrangeDialog.DIALOG_TYPE_INPUT]才生效</P>
+         * <P>dialogType为[DialogType.INPUT]才生效</P>
          */
-        fun secondInputValue(secondInputValue: CharSequence?): Builder {
+        fun setSecondInputValue(secondInputValue: CharSequence?): Builder {
             this.secondInputValue = secondInputValue
             return this
         }
 
         /**
          * 次级输入框是否显示
-         * <P>dialogType为[OrangeDialog.DIALOG_TYPE_INPUT]才生效</P>
+         * <P>dialogType为[DialogType.INPUT]才生效</P>
          */
-        fun secondInputVisible(secondInputVisible: Boolean): Builder {
+        fun setSecondInputVisible(secondInputVisible: Boolean): Builder {
             this.secondInputVisible = secondInputVisible
             return this
         }
 
         /**
          * 图片
-         * <P>dialogType为[OrangeDialog.DIALOG_TYPE_IMAGE]才生效</P>
+         * <P>dialogType为[DialogType.IMAGE]才生效</P>
          *
          * @param iconResId
          */
-        fun iconResId(@DrawableRes iconResId: Int): Builder {
+        fun setIconResId(@DrawableRes iconResId: Int): Builder {
             this.iconResId = iconResId
             return this
         }
@@ -893,12 +927,15 @@ open class OrangeDialog(/*-----------------------------------DIALOG ACTION END--
         /**
          * 列表
          */
-        fun items(items: Array<String>?): Builder {
+        fun setItems(items: Array<String>?): Builder {
             this.items = items
             return this
         }
 
-        fun needInput(isNeedInput: Boolean): Builder {
+        /**
+         * 是否展示键盘
+         */
+        fun setNeedInput(isNeedInput: Boolean): Builder {
             this.isNeedInput = isNeedInput
             return this
         }
@@ -906,7 +943,7 @@ open class OrangeDialog(/*-----------------------------------DIALOG ACTION END--
         /**
          * 默认单项选择
          */
-        fun selectedIndexSingleChoice(selectedIndex: Int): Builder {
+        fun setSelectedIndexSingleChoice(selectedIndex: Int): Builder {
             this.selectedIndex = selectedIndex
             return this
         }
@@ -914,21 +951,21 @@ open class OrangeDialog(/*-----------------------------------DIALOG ACTION END--
         /**
          * 默认多项选择
          */
-        fun selectedIndexMultiChoice(selectedIndices: ArraySet<Int>?): Builder {
+        fun setSelectedIndexMultiChoice(selectedIndices: ArraySet<Int>?): Builder {
             this.selectedIndices = selectedIndices
             return this
         }
 
         /**
          * 设置单选的回调
-         * <P>单选：dialogType为[OrangeDialog.DIALOG_TYPE_SINGLE_CHOICE]才生效</P>
+         * <P>单选：dialogType为[DialogType.SINGLE_CHOICE]才生效</P>
          *
          * @param selectedIndex 选中的选择框
          * @param callback      单选回调
          */
-        fun itemsCallbackSingleChoice(
+        fun setItemsCallbackSingleChoice(
             selectedIndex: Int,
-            callback: ListCallbackSingleChoice?
+            callback: SingleChoiceCallback?
         ): Builder {
             this.selectedIndex = selectedIndex
             listCallbackSingleChoice = callback
@@ -938,14 +975,14 @@ open class OrangeDialog(/*-----------------------------------DIALOG ACTION END--
 
         /**
          * 设置多选的回调
-         * <P>多选：dialogType为[OrangeDialog.DIALOG_TYPE_MULTI_CHOICE]才生效</P>
+         * <P>多选：dialogType为[DialogType.MULTI_CHOICE]才生效</P>
          *
          * @param selectedIndices 选中的选择框
          * @param callback        多选回调
          */
-        fun itemsCallbackMultiChoice(
+        fun setItemsCallbackMultiChoice(
             selectedIndices: ArraySet<Int>?,
-            callback: ListCallbackMultiChoice?
+            callback: MultiChoiceCallback?
         ): Builder {
             selectedIndices?.let {
                 this.selectedIndices = selectedIndices
@@ -958,9 +995,9 @@ open class OrangeDialog(/*-----------------------------------DIALOG ACTION END--
         /**
          * 设置列表
          * <P>Sets a custom [RecyclerView.Adapter] for the dialog's list</P>
-         * <P>dialogType为[OrangeDialog.DIALOG_TYPE_LIST]才生效</P>
+         * <P>dialogType为[DialogType.LIST]才生效</P>
          */
-        fun adapter(
+        fun setAdapter(
             adapter: RecyclerView.Adapter<*>?,
             layoutManager: RecyclerView.LayoutManager?
         ): Builder {
@@ -971,16 +1008,24 @@ open class OrangeDialog(/*-----------------------------------DIALOG ACTION END--
 
         /**
          * 设置列表最大高度，单位dp
-         * <P>dialogType为[OrangeDialog.DIALOG_TYPE_LIST]才生效</P>
+         * <P>dialogType为[DialogType.LIST]才生效</P>
          */
-        fun listMaxHeight(maxHeight: Int): Builder {
+        fun setListMaxHeight(maxHeight: Int): Builder {
             listMaxHeight = maxHeight
             return this
         }
 
         /**
+         * 设置最多输入的文字
+         */
+        fun setInputMax(i: Int): Builder {
+            inputSize = i
+            return this
+        }
+
+        /**
          * 设置自定义布局
-         * <P>dialogType为[OrangeDialog.DIALOG_TYPE_CUSTOM]才生效</P>
+         * <P>dialogType为[DialogType.CUSTOM]才生效</P>
          */
         fun setCustomView(
             customLayoutId: Int,
@@ -1003,51 +1048,13 @@ open class OrangeDialog(/*-----------------------------------DIALOG ACTION END--
             return dialog
         }
 
-        fun inputMax(i: Int): Builder {
-            inputSize = i
-            return this
-        }
 
     }
 
+
+
+
     companion object {
-        /*-----------------------------------DIALOG TYPE BEGIN-----------------------------------*/
-        /**
-         * 输入弹窗
-         */
-        const val DIALOG_TYPE_INPUT = 0x1
-
-        /**
-         * 图片弹窗
-         */
-        const val DIALOG_TYPE_IMAGE = 0x2
-
-        /**
-         * 普通消息弹窗
-         */
-        const val DIALOG_TYPE_MESSAGE = 0x3
-
-        /**
-         * 单选列表弹窗
-         */
-        const val DIALOG_TYPE_SINGLE_CHOICE = 0x4
-
-        /**
-         * 多选列表弹窗
-         */
-        const val DIALOG_TYPE_MULTI_CHOICE = 0x5
-
-        /**
-         * 基础列表弹窗
-         */
-        const val DIALOG_TYPE_LIST = 0x6
-
-        /**
-         * 自定义弹窗
-         */
-        const val DIALOG_TYPE_CUSTOM = 0x7
-
-        /*-----------------------------------DIALOG TYPE END-----------------------------------*/ /*-----------------------------------DIALOG ACTION BEGIN-----------------------------------*/
         const val DIALOG_ACTION_POSITIVE = "positive"
         const val DIALOG_ACTION_NEGATIVE = "negative"
     }
